@@ -30,7 +30,7 @@ jobs:
        cat <<EOT >> release.js
        var shell = require( "shelljs" );
        shell.echo("----- Releasing -----")
-       shell.exec("npm publish", "--provenance --access restricted")
+       shell.exec("npm publish --provenance --access public")
        shell.echo("----- End release -----")
        EOT
        node release.js
