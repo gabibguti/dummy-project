@@ -1,6 +1,6 @@
 {
-  "name": "joycebrum-dummy-project",
-  "version": "v1.0.7",
+  "name": "gabibguti-dummy-project",
+  "version": "v1.0.0",
   "description": "It is a dummy project to test publishing npm with provenance",
   "main": "index.js",
   "scripts": {
@@ -8,12 +8,12 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/joycebrum/dummy-project.git"
+    "url": "git+https://github.com/gabibguti/dummy-project.git"
   },
-  "author": "Joyce Brum <joycebrum@google.com>",
+  "author": "Gabriela Gutierrez <gabigutierrez@google.com>",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/joycebrum/dummy-project/issues"
+    "url": "https://github.com/gabibguti/dummy-project/issues"
   },
-  "homepage": "https://github.com/joycebrum/dummy-project#readme"
+  "homepage": "https://github.com/gabibguti/dummy-project#readme"
 }
