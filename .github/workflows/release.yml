@@ -30,7 +30,7 @@ jobs:
        cat <<EOT >> release.js
        var shell = require( "shelljs" );
        shell.echo("----- Releasing -----")
-       shell.exec("npm publish --provenance --access public")
+       shell.exec("npm publish --access public")
        shell.echo("----- End release -----")
        EOT
        node release.js
@@ -38,3 +38,4 @@ jobs:
 #       run: npm publish --provenance --access public
       env:
         NODE_AUTH_TOKEN: ${{ secrets.NPM_PUBLISH_TOKEN }}
+        NPM_CONFIG_PROVENANCE: true
