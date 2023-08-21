@@ -1,20 +1,51 @@
 name: Publish Package to npmjs
 
 on:
- release:
-   types: [created]
+   workflow_dispatch:
+     inputs:
+       tags:
+         description: Tag (v1.0.0)
+         required: true
+         type: string
 
 jobs:
  build:
    runs-on: ubuntu-latest
 
    permissions:
-     contents: read
+     contents: write
      id-token: write
 
    steps:
-    - name: Checkout source
-      uses: actions/checkout@ac593985615ec2ede58e132d2e21d2b1cbd6127c # v3
+    - name: Get release by tag
+      id: get-release-by-tag
+      uses: actions/github-script@v5
+      with:
+        script: |
+          github.rest.repos.getReleaseByTag({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            tag: ${{ inputs.tag }}
+          })
+    - run: echo "${{steps.set-result.outputs.result}}" # test
+    - name: Verify if release already exists
+      if: ${{ steps.get-release-by-tag.outputs.result.statusCode }} == 200
+      run: |
+        echo "A release with this tag already exists."
+        exit 0
+    - name: Checkout tag
+      uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9 # v3.5.3
+      with:
+        ref: ${{ inputs.tag }}
+    - name: Create GitHub release
+      uses: actions/github-script@v5
+      with:
+        script: |
+          github.rest.repos.createRelease({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            tag_name: ${{ inputs.tag }}
+          })
     - name: Set up node
       uses: actions/setup-node@v3
       with:
@@ -24,18 +55,8 @@ jobs:
     - name: Install NPM
       run: npm install -g npm@latest
     - run: npm ci
-    - name: Release using shelljs in JS script
-      run: |
-       npm install shelljs
-       cat <<EOT >> release.js
-       var shell = require( "shelljs" );
-       shell.echo("----- Releasing -----")
-       shell.exec("npm publish --access public")
-       shell.echo("----- End release -----")
-       EOT
-       node release.js
-#     - name: Release using shelljs in JS script
-#       run: npm publish --provenance --access public
+    - name: Release
+      run: npm publish --provenance --access public
       env:
         NODE_AUTH_TOKEN: ${{ secrets.NPM_PUBLISH_TOKEN }}
         NPM_CONFIG_PROVENANCE: true
