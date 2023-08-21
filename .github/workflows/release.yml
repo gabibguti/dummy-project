@@ -22,11 +22,12 @@ jobs:
       uses: actions/github-script@v5
       with:
         script: |
+          const inputs = ${{ toJSON(inputs) }};
           github.rest.repos.getReleaseByTag({
             owner: context.repo.owner,
             repo: context.repo.repo,
-            tag: github.event.inputs.tag
-          })
+            tag: inputs.tag
+          });
     - run: echo "${{steps.set-result.outputs.result}}" # test
     - name: Verify if release already exists
       if: ${{ steps.get-release-by-tag.outputs.result.statusCode }} == 200
@@ -41,11 +42,12 @@ jobs:
       uses: actions/github-script@v5
       with:
         script: |
+          const inputs = ${{ toJSON(inputs) }};
           github.rest.repos.createRelease({
             owner: context.repo.owner,
             repo: context.repo.repo,
-            tag_name: github.event.inputs.tag
-          })
+            tag_name: inputs.tag
+          });
     - name: Set up node
       uses: actions/setup-node@v3
       with:
