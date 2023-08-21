@@ -17,23 +17,20 @@ jobs:
      id-token: write
 
    steps:
-    - name: Get release by tag
-      id: get-release-by-tag
+    - name: Verify if release already exists
       uses: actions/github-script@v5
       with:
         script: |
           const inputs = ${{ toJSON(inputs) }};
-          github.rest.repos.getReleaseByTag({
+          const res = await github.rest.repos.getReleaseByTag({
             owner: context.repo.owner,
             repo: context.repo.repo,
             tag: inputs.tag
           });
-    - run: echo "${{steps.set-result.outputs.result}}" # test
-    - name: Verify if release already exists
-      if: ${{ steps.get-release-by-tag.outputs.result.statusCode }} == 200
-      run: |
-        echo "A release with this tag already exists."
-        exit 0
+          if (res.status == 200) {
+             console.log("A release with this tag already exists.")
+             return 0
+          }
     - name: Checkout tag
       uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9 # v3.5.3
       with:
