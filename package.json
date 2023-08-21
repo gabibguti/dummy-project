@@ -1,6 +1,6 @@
 {
   "name": "gabibguti-dummy-project",
-  "version": "v1.0.13",
+  "version": "v1.0.14",
   "description": "It is a dummy project to test publishing npm with provenance",
   "main": "index.js",
   "scripts": {
