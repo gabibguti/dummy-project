@@ -25,7 +25,7 @@ jobs:
           github.rest.repos.getReleaseByTag({
             owner: context.repo.owner,
             repo: context.repo.repo,
-            tag: inputs.tag
+            tag: context.inputs.tag
           })
     - run: echo "${{steps.set-result.outputs.result}}" # test
     - name: Verify if release already exists
@@ -44,7 +44,7 @@ jobs:
           github.rest.repos.createRelease({
             owner: context.repo.owner,
             repo: context.repo.repo,
-            tag_name: inputs.tag
+            tag_name: context.inputs.tag
           })
     - name: Set up node
       uses: actions/setup-node@v3
