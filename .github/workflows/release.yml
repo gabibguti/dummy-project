@@ -1,75 +1,72 @@
 name: Publish Package to npmjs
 
 on:
-   workflow_dispatch:
-     inputs:
-       tag:
-         description: Tag (v1.0.0)
-         required: true
-         type: string
+  push:
+    branches:
+      - main
 
 jobs:
  build:
-   runs-on: ubuntu-latest
+    runs-on: ubuntu-latest
 
-   permissions:
-     contents: write
-     pull-requests: write
+    permissions:
+      contents: write
+      issues: write
+      pull-requests: write
+      packages: write
 
-   steps:
-    # - name: Get release by tag
-    #   id: get-release-by-tag
-    #   uses: actions/github-script@v5
-    #   with:
-    #     script: |
-    #       const inputs = ${{ toJSON(inputs) }};
-    #       github.rest.repos.getReleaseByTag({
-    #         owner: context.repo.owner,
-    #         repo: context.repo.repo,
-    #         tag: inputs.tag
-    #       });
-    #   continue-on-error: true
-    # - run: echo "${{steps.get-release-by-tag.outputs.result}}" # test
-    # - name: Verify if release already exists
-    #   if: ${{ steps.get-release-by-tag.outputs.result.status }} == 200
-    #   run: |
-    #     echo "A release with this tag already exists."
-    #     exit 0
-    - name: Checkout tag
-      uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9 # v3.5.3
-      with:
-        ref: ${{ inputs.tag }}
-    # - name: Create GitHub release
-    #   uses: actions/github-script@v5
-    #   with:
-    #     script: |
-    #       const inputs = ${{ toJSON(inputs) }};
-    #       github.rest.repos.createRelease({
-    #         owner: context.repo.owner,
-    #         repo: context.repo.repo,
-    #         tag_name: inputs.tag
-    #       });
-    - name: Setup PNPM
-      uses: pnpm/action-setup@v2
-      with:
-         version: 9.0.5
-    - name: Set up node
-      uses: actions/setup-node@v3
-      with:
-        node-version: '20'
-        cache: pnpm
-    - name: Install Dependencies
-      run: pnpm install
-    # - name: Release
-    #   run: npm publish --provenance --access public
-    #   env:
-    #     NODE_AUTH_TOKEN: ${{ secrets.NPM_PUBLISH_TOKEN }}
-    #     NPM_CONFIG_PROVENANCE: true
-    - name: Create Release Pull Request or Publish to npm
-      id: changesets
-      uses: changesets/action@v1
-      with:
-       publish: pnpm publish
-      env:
-       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-       NPM_TOKEN: ${{ secrets.NPM_PUBLISH_TOKEN }}
+    steps:
+      # - name: Get release by tag
+      #   id: get-release-by-tag
+      #   uses: actions/github-script@v5
+      #   with:
+      #     script: |
+      #       const inputs = ${{ toJSON(inputs) }};
+      #       github.rest.repos.getReleaseByTag({
+      #         owner: context.repo.owner,
+      #         repo: context.repo.repo,
+      #         tag: inputs.tag
+      #       });
+      #   continue-on-error: true
+      # - run: echo "${{steps.get-release-by-tag.outputs.result}}" # test
+      # - name: Verify if release already exists
+      #   if: ${{ steps.get-release-by-tag.outputs.result.status }} == 200
+      #   run: |
+      #     echo "A release with this tag already exists."
+      #     exit 0
+      - name: Checkout
+        uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9 # v3.5.3
+      # - name: Create GitHub release
+      #   uses: actions/github-script@v5
+      #   with:
+      #     script: |
+      #       const inputs = ${{ toJSON(inputs) }};
+      #       github.rest.repos.createRelease({
+      #         owner: context.repo.owner,
+      #         repo: context.repo.repo,
+      #         tag_name: inputs.tag
+      #       });
+      - name: Setup PNPM
+        uses: pnpm/action-setup@v2
+        with:
+          version: 9.0.5
+      - name: Set up node
+        uses: actions/setup-node@v3
+        with:
+          node-version: '20'
+          cache: pnpm
+      - name: Install Dependencies
+        run: pnpm install
+      # - name: Release
+      #   run: npm publish --provenance --access public
+      #   env:
+      #     NODE_AUTH_TOKEN: ${{ secrets.NPM_PUBLISH_TOKEN }}
+      #     NPM_CONFIG_PROVENANCE: true
+      - name: Create Release Pull Request or Publish to npm
+        id: changesets
+        uses: changesets/action@v1
+        with:
+          publish: pnpm publish
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NPM_TOKEN: ${{ secrets.NPM_PUBLISH_TOKEN }}
