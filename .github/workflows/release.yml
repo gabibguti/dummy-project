@@ -58,8 +58,17 @@ jobs:
     - name: Install NPM
       run: npm install -g npm@latest
     - run: npm ci
-    - name: Release
-      run: npm publish --provenance --access public
+    # - name: Release
+    #   run: npm publish --provenance --access public
+    #   env:
+    #     NODE_AUTH_TOKEN: ${{ secrets.NPM_PUBLISH_TOKEN }}
+    #     NPM_CONFIG_PROVENANCE: true
+    - name: Create Release Pull Request or Publish to npm
+      id: changesets
+      uses: changesets/action@v1
+      with:
+       version: ${{ inputs.tag }}
+       publish: pnpm publish
       env:
-        NODE_AUTH_TOKEN: ${{ secrets.NPM_PUBLISH_TOKEN }}
-        NPM_CONFIG_PROVENANCE: true
+       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+       NPM_TOKEN: ${{ secrets.NPM_PUBLISH_TOKEN }}
