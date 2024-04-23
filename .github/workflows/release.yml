@@ -67,7 +67,6 @@ jobs:
       id: changesets
       uses: changesets/action@v1
       with:
-       version: ${{ inputs.tag }}
        publish: pnpm publish
       env:
        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
