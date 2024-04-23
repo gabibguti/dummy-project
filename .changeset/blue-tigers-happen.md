@@ -1,5 +1,5 @@
 ---
-"@fake-scope/fake-pkg": patch
+"gabibguti-dummy-project": patch
 ---
 
 Update README.md
